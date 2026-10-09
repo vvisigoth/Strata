@@ -847,6 +847,15 @@ class OutputParser:
                         out.append(Event("reasoning", self._track(self.buf[:len(self.buf) - keep])))
                         self.buf = self.buf[len(self.buf) - keep:]
                     return out
+                # A closing tag quoted in Markdown is reasoning text, just like a quoted tool opener.
+                snap = (self.fence, self.line, self.ticks)
+                self._track(self.buf[:i])
+                in_code = self._in_code()
+                self.fence, self.line, self.ticks = snap
+                if in_code:
+                    out.append(Event("reasoning", self._track(self.buf[:i + len(THINK_END)])))
+                    self.buf = self.buf[i + len(THINK_END):]
+                    continue
                 if i:
                     out.append(Event("reasoning", self._track(self.buf[:i])))
                 self.buf = self.buf[i + len(THINK_END):]

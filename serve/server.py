@@ -2954,6 +2954,9 @@ class Service:
                                 if t in self.stop_ids:
                                     finish = "stop"
                                     raw_ids.append(t)
+                                    if parser.state == "reasoning" or parser._in_code():
+                                        print(f"[strata] early end marker: id={t}, phase={parser.state}, "
+                                              f"inside_markdown_code={parser._in_code()}", flush=True)
                                     break
                                 raw_ids.append(t)
                                 seg.append(t)
